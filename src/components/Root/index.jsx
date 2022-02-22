@@ -14,6 +14,8 @@ const Root = props => {
 
   const foramtedData = formatData(data);
 
+  console.log({ foramtedData, data });
+
   React.useLayoutEffect(() => {
     const width = wrapperRef.current.offsetWidth;
     const height = wrapperRef.current.offsetHeight;
