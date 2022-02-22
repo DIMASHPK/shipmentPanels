@@ -1,14 +1,14 @@
 export const data = [
   {
     id: 1,
-    airport: "BOM",
+    airport: "1",
     mlsStatus: "Departed",
     nextStopId: 2,
     split: [],
   },
   {
     id: 2,
-    airport: "DXB",
+    airport: "2",
     mlsStatus: "Departed",
     nextStopId: null,
     split: [
@@ -24,7 +24,7 @@ export const data = [
   },
   {
     id: 5,
-    airport: "CDG",
+    airport: "3",
     mlsStatus: "Departed",
     nextStopId: null,
     split: [
@@ -40,7 +40,7 @@ export const data = [
   },
   {
     id: 8,
-    airport: "MUC",
+    airport: "4",
     mlsStatus: "Arrived",
     nextStopId: null,
     split: [
@@ -56,7 +56,7 @@ export const data = [
   },
   {
     id: 11,
-    airport: "FRA1",
+    airport: "5",
     mlsStatus: "Partial Arrived",
     nextStopId: null,
     split: [
@@ -68,7 +68,7 @@ export const data = [
   },
   {
     id: 13,
-    airport: "FRA2",
+    airport: "6",
     mlsStatus: "Partial Arrived",
     nextStopId: 15,
     split: [
@@ -80,7 +80,7 @@ export const data = [
   },
   {
     id: 15,
-    airport: "FRA3",
+    airport: "7",
     mlsStatus: "Partial Arrived",
     nextStopId: 15,
     split: [
@@ -92,7 +92,7 @@ export const data = [
   },
   {
     id: 17,
-    airport: "FRA4",
+    airport: "8",
     mlsStatus: "Partial Arrived",
     nextStopId: 15,
     split: [
@@ -104,35 +104,35 @@ export const data = [
   },
   {
     id: 19,
-    airport: "FRA5",
+    airport: "9",
     mlsStatus: "Partial Arrived",
     nextStopId: 23,
     split: [],
   },
   {
     id: 20,
-    airport: "FRA6",
+    airport: "10",
     mlsStatus: "Partial Arrived",
     nextStopId: 23,
     split: [],
   },
   {
     id: 21,
-    airport: "FRA7",
+    airport: "11",
     mlsStatus: "Partial Arrived",
     nextStopId: 23,
     split: [],
   },
   {
     id: 22,
-    airport: "FRA8",
+    airport: "12",
     mlsStatus: "Partial Arrived",
     nextStopId: 23,
     split: [],
   },
   {
     id: 23,
-    airport: "FRA9",
+    airport: "13",
     mlsStatus: "Partial Arrived",
     nextStopId: null,
     split: [],

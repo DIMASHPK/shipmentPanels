@@ -1,5 +1,6 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { data } from "../mocks";
+import { getSource, getTarget, findLast } from "./helpers";
 
 export const useFlowItems = (
   {
@@ -17,39 +18,17 @@ export const useFlowItems = (
   const ref = useRef();
   const { bottom, right, top, left } = gutters;
 
-  const findLast = (arr, callback) => arr.slice().reverse().find(callback);
-
-  const getInitialData = () => {
-    let nextYPosition;
-
-    const getSource = i => {
-      if (!i) {
-        return "right";
-      }
-
-      return "left";
-    };
-
-    const getTarget = i => {
-      if (!i || i !== data.length - 1) {
-        return "right";
-      }
-
-      return "left";
-    };
+  const getInitialElements = () => {
+    let elements = [];
 
     const getPositionForSameColumnPanels = ({ findedSplit }) => {
       const { x } = findedSplit.position;
 
       const xpos = x + panelWidth + right;
 
-      const panelWithSamePosition = elements.find(
+      const panelWithSamePosition = findLast(
+        elements,
         ({ position: { x: sameX } }) => sameX === xpos
-      );
-
-      const panelWithSameNextPosition = elements.find(
-        ({ position: { x: sameX, y: sameY } }) =>
-          sameX === xpos && nextYPosition === sameY
       );
 
       const panelSplits = panelWithSamePosition?.data?.split;
@@ -66,18 +45,7 @@ export const useFlowItems = (
         };
       }
 
-      if (panelWithSameNextPosition) {
-        nextYPosition = nextYPosition + bottom + panelHeight;
-
-        return {
-          x: xpos,
-          y: nextYPosition,
-        };
-      }
-
       if (panelWithSamePosition) {
-        nextYPosition = panelWithSamePosition.position.y + bottom + panelHeight;
-
         return {
           x: xpos,
           y: panelWithSamePosition.position.y + bottom + panelHeight,
@@ -89,8 +57,6 @@ export const useFlowItems = (
         y: top,
       };
     };
-
-    let elements = [];
 
     const getPanelPostion = (id, i) => {
       const findedSplit = elements.find(
@@ -132,18 +98,19 @@ export const useFlowItems = (
             data: { ...item, type: "split" },
             position: { ...prevSplitPosition },
             ...initData,
-            sourcePosition: !i ? "top" : "right",
+            targetPosition: !i ? "top" : "right",
+            sourcePosition: "right",
           },
         ];
       });
     };
 
-    data.forEach((item, i) => {
-      const { id, nextStopId, split, ...rest } = item;
+    const forEachHandler = (item, i) => {
+      const { id, split, ...rest } = item;
 
       const initData = {
         type: "special",
-        sourcePosition: getSource(i),
+        sourcePosition: getSource(i, data, split),
         targetPosition: getTarget(i),
       };
 
@@ -153,7 +120,7 @@ export const useFlowItems = (
         ...elements,
         {
           id,
-          data: { ...rest, type: "panel", split },
+          data: { ...rest, type: "panel", split, id },
           position: currentPanelPosition,
           ...initData,
         },
@@ -162,11 +129,52 @@ export const useFlowItems = (
       if (split?.length) {
         addPanelSplits({ split, currentPanelPosition, initData });
       }
-    });
+    };
+
+    data.forEach(forEachHandler);
 
     console.log({ elements, data });
 
     return [...elements];
+  };
+
+  const getInitialEdges = elements => {
+    let edges = [];
+
+    const forEachHandler = item => {
+      const {
+        data: { nextStopId, id, split },
+      } = item;
+
+      if (!nextStopId && !split?.length) {
+        return;
+      }
+
+      const initData = {
+        id: `${id}-${nextStopId}`,
+        source: id,
+        target: nextStopId,
+      };
+
+      if (split?.length) {
+        initData.id = `${id}-${split[0].id}`;
+        initData.target = split[0].id;
+        console.log({ initData, split });
+      }
+
+      edges = [...edges, { ...initData }];
+    };
+
+    elements.forEach(forEachHandler);
+
+    return edges;
+  };
+
+  const getInitialData = () => {
+    const elements = getInitialElements();
+    const edges = getInitialEdges(elements);
+
+    return [...elements, ...edges];
   };
 
   const items = getInitialData();
