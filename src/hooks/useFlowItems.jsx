@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { data } from "../mocks";
+import { DATA, STATUSES, EDGE_STYLES } from "../mocks";
 import { getSource, getTarget, findLast } from "./helpers";
 
 export const useFlowItems = (
@@ -9,7 +9,7 @@ export const useFlowItems = (
     panelHeight = 123,
     splitHeight = 79,
   } = {
-    gutters: { top: 20, left: 20, right: 55, bottom: 55 },
+    gutters: { top: 20, left: 20, right: 70, bottom: 55 },
     panelWidth: 142,
     panelHeight: 123,
     splitHeight: 91,
@@ -17,6 +17,26 @@ export const useFlowItems = (
 ) => {
   const ref = useRef();
   const { bottom, right, top, left } = gutters;
+
+  const getEdgeStylesMapping = style => {
+    switch (style) {
+      case EDGE_STYLES.GREEN: {
+        return {
+          data: {
+            markerEndId: "react-flow__arrowclosed-green",
+          },
+          style: { strokeWidth: 3, stroke: "green" },
+        };
+      }
+      default:
+        return {
+          data: {
+            markerEndId: "react-flow__arrowclosed",
+          },
+          style: { strokeWidth: 3, stroke: "grey" },
+        };
+    }
+  };
 
   const getInitialElements = () => {
     let elements = [];
@@ -110,7 +130,7 @@ export const useFlowItems = (
 
       const initData = {
         type: "special",
-        sourcePosition: getSource(i, data, split),
+        sourcePosition: getSource(i, DATA, split),
         targetPosition: getTarget(i),
       };
 
@@ -131,11 +151,28 @@ export const useFlowItems = (
       }
     };
 
-    data.forEach(forEachHandler);
+    DATA.forEach(forEachHandler);
 
-    console.log({ elements, data });
+    console.log({ elements, DATA });
 
     return [...elements];
+  };
+
+  const getEdgeStyleKey = item => {
+    const {
+      data: { split, nextStopId, mlsStatus },
+    } = item;
+
+    const nextItem = DATA.find(({ id }) => id === nextStopId);
+
+    if (
+      (split?.length && mlsStatus === STATUSES.DEPARTED) ||
+      nextItem?.mlsStatus === STATUSES.DEPARTED
+    ) {
+      return EDGE_STYLES.GREEN;
+    }
+
+    return EDGE_STYLES.GREY;
   };
 
   const getInitialEdges = elements => {
@@ -154,12 +191,14 @@ export const useFlowItems = (
         id: `${id}-${nextStopId}`,
         source: id,
         target: nextStopId,
+        type: "custom" /* "straight" */ /* "step" */ /* "default" */ /* "smoothstep" */,
+        arrowHeadType: "arrow" /* "arrowclosed" */,
+        ...getEdgeStylesMapping(getEdgeStyleKey(item)),
       };
 
       if (split?.length) {
         initData.id = `${id}-${split[0].id}`;
         initData.target = split[0].id;
-        console.log({ initData, split });
       }
 
       edges = [...edges, { ...initData }];
@@ -179,5 +218,20 @@ export const useFlowItems = (
 
   const items = getInitialData();
 
-  return { wrapperRef: ref, items };
+  const getHeight = items => {
+    const min = 0;
+    let max;
+
+    items.forEach(item => {
+      if (item?.position?.y > max || !max) {
+        max = item?.position?.y;
+      }
+    });
+
+    return max - min + panelHeight + bottom;
+  };
+
+  const height = getHeight(items);
+
+  return { wrapperRef: ref, items, height };
 };

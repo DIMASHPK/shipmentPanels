@@ -4,7 +4,7 @@ import { Stage, Layer, Line } from "react-konva";
 import Column from "../Column/";
 import { formatData } from "../../utils";
 import useLines from "../../hooks/useLines";
-import { data } from "../../mocks";
+import { DATA } from "../../mocks";
 
 const Root = props => {
   const [width, setWidth] = React.useState(0);
@@ -12,9 +12,9 @@ const Root = props => {
 
   const { panelLines, wrapperRef } = useLines();
 
-  const foramtedData = formatData(data);
+  const foramtedData = formatData(DATA);
 
-  console.log({ foramtedData, data });
+  console.log({ foramtedData, DATA });
 
   React.useLayoutEffect(() => {
     const width = wrapperRef.current.offsetWidth;

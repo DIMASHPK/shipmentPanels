@@ -2,6 +2,8 @@ import React from "react";
 import Panel from "./Panel";
 import ReactFlow from "react-flow-renderer";
 import { useFlowItems } from "../../hooks/useFlowItems";
+import MarkerDefinition from "./MarkerDefinition";
+import CustomEdge from "./CustomEdge";
 
 /* const initialElements = [
   {
@@ -100,22 +102,27 @@ import { useFlowItems } from "../../hooks/useFlowItems";
 ]; */
 
 const HorizontalFlow = () => {
-  const { items, wrapperRef } = useFlowItems();
+  const { items, wrapperRef, height } = useFlowItems();
 
   return (
-    <div style={{ height: 2000 }} ref={wrapperRef}>
-      <ReactFlow
-        elements={items}
-        nodesDraggable={false}
-        selectNodesOnDrag={false}
-        nodesConnectable={false}
-        zoomOnScroll={false}
-        zoomOnPinch={false}
-        panOnScroll={false}
-        paneMoveable={false}
-        nodeTypes={{ special: Panel }}
-      />
-    </div>
+    <>
+      <div style={{ height }} ref={wrapperRef}>
+        <ReactFlow
+          elements={items}
+          nodesDraggable={false}
+          selectNodesOnDrag={false}
+          nodesConnectable={false}
+          zoomOnScroll={false}
+          zoomOnPinch={false}
+          panOnScroll={false}
+          paneMoveable={false}
+          nodeTypes={{ special: Panel }}
+          edgeTypes={{ custom: CustomEdge }}
+        >
+          <MarkerDefinition id="react-flow__arrowclosed-green" color="green" />
+        </ReactFlow>
+      </div>
+    </>
   );
 };
 
