@@ -1,47 +1,38 @@
 export const formatData = data => {
-  let newData = [];
+  let panelColumns = [];
 
-  /* for (let i = 0; i < data.length; i++) {
-    if (data[i].break) {
-      continue;
-    }
+  data.forEach((panel, i) => {
+    const beforeLastColumn = panelColumns?.[panelColumns.length - 2] || [];
 
-    const currentSplits = data[i]?.split;
-    const array = [];
+    const beforeLastColumnSplitsQty = beforeLastColumn.reduce(
+      (acc, { split }) => split.length + acc,
+      0
+    );
 
-    newData.push([data[i]]);
+    const beforeLastColumnSplitsNextIds =
+      beforeLastColumn?.reduce(
+        (acc, { split }) => [
+          ...acc,
+          ...split.map(({ nextStopId }) => nextStopId),
+        ],
+        []
+      ) || [];
 
-    if (currentSplits?.length) {
-      currentSplits.forEach((item, k) => {
-        array.push(data[i + k + 1]);
+    if (
+      beforeLastColumnSplitsQty &&
+      beforeLastColumnSplitsNextIds.includes(panel.id)
+    ) {
+      panelColumns = [
+        ...panelColumns.map((item, i) =>
+          i === panelColumns.length - 1 ? [...item, panel] : item
+        ),
+      ];
 
-        data[k + i + i].break = true;
-      });
-
-      newData.push(array);
-    }
-  } */
-
-  data.forEach((item, i) => {
-    if (item.break) {
       return;
     }
 
-    const currentSplits = item?.split;
-    const array = [];
-
-    newData.push([item]);
-
-    if (currentSplits?.length) {
-      currentSplits.forEach((_, k) => {
-        array.push(data[i + k + 1]);
-
-        data[k + i + i].break = true;
-      });
-
-      newData.push(array);
-    }
+    panelColumns = [...panelColumns, [panel]];
   });
 
-  return newData;
+  return panelColumns;
 };

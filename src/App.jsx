@@ -6,8 +6,8 @@ import HorizontalFlow from "./components/ReactFlow";
 const App = () => {
   return (
     <>
-      <HorizontalFlow />
-      {/* <Root /> */}
+      {/* <HorizontalFlow /> */}
+      <Root />
     </>
   );
 };

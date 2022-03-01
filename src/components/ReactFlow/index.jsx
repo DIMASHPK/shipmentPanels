@@ -4,6 +4,7 @@ import ReactFlow from "react-flow-renderer";
 import { useFlowItems } from "../../hooks/useFlowItems";
 import MarkerDefinition from "./MarkerDefinition";
 import CustomEdge from "./CustomEdge";
+import styles from "./styles.module.css";
 
 /* const initialElements = [
   {
@@ -105,7 +106,7 @@ const HorizontalFlow = () => {
   const { items, wrapperRef, height } = useFlowItems();
 
   return (
-    <>
+    <div className="">
       <div style={{ height }} ref={wrapperRef}>
         <ReactFlow
           elements={items}
@@ -122,7 +123,7 @@ const HorizontalFlow = () => {
           <MarkerDefinition id="react-flow__arrowclosed-green" color="green" />
         </ReactFlow>
       </div>
-    </>
+    </div>
   );
 };
 
