@@ -1,91 +1,111 @@
 import { useRef, useState, useLayoutEffect, useCallback } from "react";
-import { getPanelNodes } from "./helpers";
+import {
+  findByNextId,
+  getItemMeasurements,
+  getPanelNodes,
+  setLineDataToArray,
+  getLineMeasurements,
+  getRelationshipItemMeasurements,
+  getTriangleMeasurements,
+  getRelationshipTriangleMeasurements,
+} from "./helpers";
 
 const useLines = () => {
   const ref = useRef();
 
   const [panelLines, setPanelLines] = useState([]);
 
-  const getPointsArray = (...data) => [...data];
+  const setSplitFromPanelLineData = useCallback(({ root, array }) => {
+    const lineMeasurements = getRelationshipItemMeasurements(
+      root,
+      root.nextSibling
+    );
 
-  const setSplitLineData = ({ root, array, width, height, bottom, y, x }) => {
-    const { y: splitY } = root.nextSibling.getBoundingClientRect();
+    const triangleMeasurements =
+      getRelationshipTriangleMeasurements(lineMeasurements);
 
-    array.push({
-      x: x + width / 2 - 8,
-      y: y + height - 8,
-      points: getPointsArray(0, 0, 0, splitY - bottom + 8),
-    });
-  };
+    setLineDataToArray(array, { lineMeasurements, triangleMeasurements });
+  }, []);
 
-  const setSplitPanelLineData = ({ root, splitPanelArrowsPositions }) => {
+  const setSplitToPanelLineData = ({
+    root,
+    splitPanelArrowsPositions,
+    panelNodes,
+  }) => {
     const splitsArray = [...root.nextSibling.childNodes];
 
     splitsArray.forEach(item => {
-      const {} = item.getBoundingClientRect();
+      const sourceItem = getItemMeasurements(item);
+
+      const matchedPanelNode = findByNextId(
+        panelNodes,
+        item.dataset.nextstopid
+      );
+
+      const targetItem = getItemMeasurements(matchedPanelNode);
+
+      const lineMeasurements = getLineMeasurements(sourceItem, targetItem);
+      const triangleMeasurements = getTriangleMeasurements(lineMeasurements);
+
+      setLineDataToArray(splitPanelArrowsPositions, {
+        lineMeasurements,
+        triangleMeasurements,
+      });
     });
   };
 
-  const renderMainLines = useCallback(root => {
-    const panelNodes = getPanelNodes(root);
+  const renderMainLines = useCallback(
+    root => {
+      const panelNodes = getPanelNodes(root);
 
-    const panelsArrowsPositions = [];
-    const splitArrowsPositions = [];
-    const splitPanelArrowsPositions = [];
+      const panelsArrowsPositions = [];
+      const splitArrowsPositions = [];
+      const splitPanelArrowsPositions = [];
 
-    const handleForEach = panelNode => {
-      const nextItem = panelNodes.find(
-        nextItem => nextItem.id === panelNode.dataset.nextstopid
-      );
+      const handleForEach = panelNode => {
+        const nextItem = findByNextId(panelNodes, panelNode.dataset.nextstopid);
 
-      const { x, width, height, y, bottom, right } =
-        panelNode.getBoundingClientRect();
+        if (panelNode.dataset.withsplits === "true") {
+          setSplitFromPanelLineData({
+            root: panelNode,
+            array: splitArrowsPositions,
+          });
 
-      if (panelNode.dataset.withsplits === "true") {
-        setSplitLineData({
-          root: panelNode,
-          width,
-          height,
-          bottom,
-          y,
-          x,
-          array: splitArrowsPositions,
+          setSplitToPanelLineData({
+            root: panelNode,
+            splitPanelArrowsPositions,
+            panelNodes,
+          });
+        }
+
+        if (!nextItem) return;
+
+        const itemMeasurements = getItemMeasurements(panelNode);
+        const nextItemMeasurements = getItemMeasurements(nextItem);
+
+        const lineMeasurements = getLineMeasurements(
+          itemMeasurements,
+          nextItemMeasurements
+        );
+
+        const triangleMeasurements = getTriangleMeasurements(lineMeasurements);
+
+        setLineDataToArray(panelsArrowsPositions, {
+          lineMeasurements,
+          triangleMeasurements,
         });
+      };
 
-        setSplitPanelLineData({
-          root: panelNode,
-          splitPanelArrowsPositions,
-        });
-      }
+      panelNodes.forEach(handleForEach);
 
-      if (!nextItem) return;
-
-      const {
-        x: nextX,
-        height: nextHeight,
-        y: nextY,
-      } = nextItem.getBoundingClientRect();
-
-      panelsArrowsPositions.push({
-        x: right - 8,
-        y: y + height / 2,
-        points: getPointsArray(
-          0,
-          0,
-          nextX - right,
-          height / 2 - nextHeight / 2 + (nextY - y)
-        ),
-      });
-    };
-
-    panelNodes.forEach(handleForEach);
-
-    return [
-      ...panelsArrowsPositions,
-      ...splitArrowsPositions,
-      ...splitPanelArrowsPositions,
-    ];
-  }, []);
+      return [
+        ...panelsArrowsPositions,
+        ...splitArrowsPositions,
+        ...splitPanelArrowsPositions,
+      ];
+    },
+    [setSplitFromPanelLineData]
+  );
 
   useLayoutEffect(() => {
     if (ref?.current) {

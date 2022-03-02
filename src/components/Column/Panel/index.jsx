@@ -2,8 +2,8 @@ import React from "react";
 import styles from "./styles.module.css";
 
 const Panel = ({ airport, mlsStatus, nextStopId, id, split }) => {
-  const renderBody = ({ zIndex = 1 }) => (
-    <div style={{ zIndex }} className={styles.panelContentContainer}>
+  const renderBody = (data = { style: { zIndex: 1 } }) => (
+    <div {...data} className={styles.panelContentContainer}>
       <p className={styles.panelContentPieces}>100 pcs</p>
       <div>
         <div>
@@ -30,11 +30,16 @@ const Panel = ({ airport, mlsStatus, nextStopId, id, split }) => {
             <span>{mlsStatus}</span>
           </div>
         </div>
-        {renderBody({})}
+        {renderBody()}
       </div>
       {Boolean(split?.length) && (
         <div className={styles.splitsWrapper}>
-          {split?.map?.((_, i) => renderBody({ zIndex: split.length - i }))}
+          {split?.map?.(({ nextStopId }, i) =>
+            renderBody({
+              style: { zIndex: split.length - i },
+              "data-nextstopid": nextStopId,
+            })
+          )}
         </div>
       )}
     </div>

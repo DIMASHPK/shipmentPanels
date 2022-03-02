@@ -12,15 +12,11 @@ const Root = props => {
 
   const { panelLines, wrapperRef } = useLines();
 
-  const foramtedData = formatData(DATA);
-
-  console.log({ foramtedData, DATA });
+  const reformatedData = formatData(DATA);
 
   React.useLayoutEffect(() => {
     const width = wrapperRef.current.offsetWidth;
     const height = wrapperRef.current.offsetHeight;
-
-    console.log({ width, height });
 
     setWidth(width);
     setHeight(height);
@@ -28,14 +24,22 @@ const Root = props => {
 
   const handleMap = (panels, id) => <Column key={id} panels={panels} />;
 
-  const handleLineMap = ({ x, y, points }, i) => (
-    <Line x={x} y={y} key={i} points={points} strokeWidth={2} stroke="blue" />
+  const handleLineMap = (
+    { lineMeasurements, triangleMeasurements, stroke = "green" },
+    i
+  ) => (
+    <React.Fragment key={i}>
+      <Line {...lineMeasurements} strokeWidth={2} stroke={stroke} />
+      {triangleMeasurements && (
+        <Line {...triangleMeasurements} strokeWidth={2} stroke={stroke} />
+      )}
+    </React.Fragment>
   );
 
   return (
     <div className={styles.mainContainer}>
       <div ref={wrapperRef} className={styles.panelsContainer}>
-        {foramtedData.map(handleMap)}
+        {reformatedData.map(handleMap)}
       </div>
       <Stage width={width} height={height} className={styles.stage}>
         <Layer>{panelLines.map(handleLineMap)}</Layer>
