@@ -1,3 +1,5 @@
+import { DATA, EDGE_STYLES, STATUSES } from "../mocks";
+
 export const getPanelNodes = root =>
   [...root.childNodes]
     .map(item => [...item.childNodes])
@@ -20,24 +22,7 @@ export const getSource = (i, data, split) => {
   return "right";
 };
 
-export const getPointsArray = (...data) => {
-  const arr = [];
-
-  /* data.forEach(item => {
-    const lastArrayItem = arr[arr.length - 1];
-
-    if (lastArrayItem && lastArrayItem.length < 2) {
-      lastArrayItem.push(item);
-      return;
-    }
-
-    arr.push([item]);
-  }); */
-
-  /* [...data]; */
-
-  return [...data];
-};
+export const getPointsArray = (...data) => [...data];
 
 export const getTarget = i => {
   if (!i) {
@@ -55,18 +40,45 @@ export const setLineDataToArray = (arr, data) => arr.push(data);
 
 export const getLineMeasurements = (
   sourceNodeMeasurements,
-  targetNodeMeasurements
+  targetNodeMeasurements,
+  windowWidth
 ) => {
   const {
     height: sourceHeight,
     y: sourceY,
     right: sourceRight,
+    x: sourceX,
+    width: sourceWidth,
   } = sourceNodeMeasurements;
+
   const {
     x: targetX,
     height: targetHeight,
     y: targetY,
   } = targetNodeMeasurements;
+
+  const commonMeasurements = {
+    x: sourceX + sourceWidth / 2 - 8,
+    y: sourceY + sourceHeight - 8,
+  };
+
+  console.log({ windowWidth });
+
+  if (windowWidth <= 991) {
+    return {
+      ...commonMeasurements,
+      points: getPointsArray(
+        0,
+        0,
+        0,
+        10,
+        targetX - sourceX,
+        10,
+        targetX - sourceX,
+        targetY - (sourceHeight + sourceY)
+      ),
+    };
+  }
 
   return {
     x: sourceRight - 8,
@@ -77,9 +89,9 @@ export const getLineMeasurements = (
       20,
       0,
       20,
-      sourceHeight / 2 - targetHeight / 2 + (targetY - sourceY),
+      targetHeight / 2 + targetY - (sourceY + sourceHeight / 2),
       targetX - sourceRight,
-      sourceHeight / 2 - targetHeight / 2 + (targetY - sourceY)
+      targetHeight / 2 + targetY - (sourceY + sourceHeight / 2)
     ),
   };
 };
@@ -102,11 +114,19 @@ export const getRelationshipItemMeasurements = (
   };
 };
 
-export const getTriangleMeasurements = lineMeasurements => {
+export const getTriangleMeasurements = (lineMeasurements, windowWidth) => {
   const { x: lineX, y: lineY, points: linePoints } = lineMeasurements;
 
   const x = lineX + linePoints[linePoints.length - 2] - 5;
   const y = lineY + linePoints[linePoints.length - 1] - 5;
+
+  if (windowWidth <= 991) {
+    return {
+      x,
+      y,
+      points: [0, 0, 5, 5, 10, 0],
+    };
+  }
 
   return {
     x,
@@ -132,3 +152,20 @@ export const findBy = (array, callback) => array.find(callback);
 
 export const findByNextId = (array, nextStopId) =>
   findBy(array, ({ id }) => id === nextStopId);
+
+export const getStrokeColor = item => {
+  const { split, nextStopId, mlsStatus } = item;
+
+  const nextItem = DATA.find(({ id }) => id === nextStopId);
+
+  if (
+    (split?.length && mlsStatus === STATUSES.DEPARTED) ||
+    nextItem?.mlsStatus === STATUSES.DEPARTED
+  ) {
+    return EDGE_STYLES.GREEN;
+  }
+
+  return EDGE_STYLES.GREY;
+};
+
+export const getDataSetStrokeColor = node => node.dataset.strokecolor;

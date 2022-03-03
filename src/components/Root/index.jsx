@@ -5,22 +5,27 @@ import Column from "../Column/";
 import { formatData } from "../../utils";
 import useLines from "../../hooks/useLines";
 import { DATA } from "../../mocks";
+import { useWindowResize } from "../../hooks/useWindowResize";
 
 const Root = props => {
   const [width, setWidth] = React.useState(0);
   const [height, setHeight] = React.useState(0);
 
-  const { panelLines, wrapperRef } = useLines();
+  const { width: windowWidth } = useWindowResize();
+
+  const { panelLines, wrapperRef } = useLines({ windowWidth });
 
   const reformatedData = formatData(DATA);
 
   React.useLayoutEffect(() => {
-    const width = wrapperRef.current.offsetWidth;
-    const height = wrapperRef.current.offsetHeight;
+    if (wrapperRef?.current) {
+      const width = wrapperRef.current.offsetWidth;
+      const height = wrapperRef.current.offsetHeight;
 
-    setWidth(width);
-    setHeight(height);
-  }, [wrapperRef]);
+      setWidth(width);
+      setHeight(height);
+    }
+  }, [wrapperRef, windowWidth]);
 
   const handleMap = (panels, id) => <Column key={id} panels={panels} />;
 
@@ -29,7 +34,12 @@ const Root = props => {
     i
   ) => (
     <React.Fragment key={i}>
-      <Line {...lineMeasurements} strokeWidth={2} stroke={stroke} />
+      <Line
+        {...lineMeasurements}
+        lineJoin="round"
+        strokeWidth={3}
+        stroke={stroke}
+      />
       {triangleMeasurements && (
         <Line {...triangleMeasurements} strokeWidth={2} stroke={stroke} />
       )}

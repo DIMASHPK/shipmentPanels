@@ -8,9 +8,10 @@ import {
   getRelationshipItemMeasurements,
   getTriangleMeasurements,
   getRelationshipTriangleMeasurements,
+  getDataSetStrokeColor,
 } from "./helpers";
 
-const useLines = () => {
+const useLines = ({ windowWidth }) => {
   const ref = useRef();
 
   const [panelLines, setPanelLines] = useState([]);
@@ -24,35 +25,46 @@ const useLines = () => {
     const triangleMeasurements =
       getRelationshipTriangleMeasurements(lineMeasurements);
 
-    setLineDataToArray(array, { lineMeasurements, triangleMeasurements });
+    setLineDataToArray(array, {
+      lineMeasurements,
+      triangleMeasurements,
+      stroke: getDataSetStrokeColor(root),
+    });
   }, []);
 
-  const setSplitToPanelLineData = ({
-    root,
-    splitPanelArrowsPositions,
-    panelNodes,
-  }) => {
-    const splitsArray = [...root.nextSibling.childNodes];
+  const setSplitToPanelLineData = useCallback(
+    ({ root, splitPanelArrowsPositions, panelNodes }) => {
+      const splitsArray = [...root.nextSibling.childNodes];
 
-    splitsArray.forEach(item => {
-      const sourceItem = getItemMeasurements(item);
+      splitsArray.forEach(item => {
+        const sourceItem = getItemMeasurements(item);
 
-      const matchedPanelNode = findByNextId(
-        panelNodes,
-        item.dataset.nextstopid
-      );
+        const matchedPanelNode = findByNextId(
+          panelNodes,
+          item.dataset.nextstopid
+        );
 
-      const targetItem = getItemMeasurements(matchedPanelNode);
+        const targetItem = getItemMeasurements(matchedPanelNode);
 
-      const lineMeasurements = getLineMeasurements(sourceItem, targetItem);
-      const triangleMeasurements = getTriangleMeasurements(lineMeasurements);
+        const lineMeasurements = getLineMeasurements(
+          sourceItem,
+          targetItem,
+          windowWidth
+        );
+        const triangleMeasurements = getTriangleMeasurements(
+          lineMeasurements,
+          windowWidth
+        );
 
-      setLineDataToArray(splitPanelArrowsPositions, {
-        lineMeasurements,
-        triangleMeasurements,
+        setLineDataToArray(splitPanelArrowsPositions, {
+          lineMeasurements,
+          triangleMeasurements,
+          stroke: getDataSetStrokeColor(item),
+        });
       });
-    });
-  };
+    },
+    [windowWidth]
+  );
 
   const renderMainLines = useCallback(
     root => {
@@ -85,14 +97,19 @@ const useLines = () => {
 
         const lineMeasurements = getLineMeasurements(
           itemMeasurements,
-          nextItemMeasurements
+          nextItemMeasurements,
+          windowWidth
         );
 
-        const triangleMeasurements = getTriangleMeasurements(lineMeasurements);
+        const triangleMeasurements = getTriangleMeasurements(
+          lineMeasurements,
+          windowWidth
+        );
 
         setLineDataToArray(panelsArrowsPositions, {
           lineMeasurements,
           triangleMeasurements,
+          stroke: getDataSetStrokeColor(panelNode),
         });
       };
 
@@ -104,7 +121,7 @@ const useLines = () => {
         ...splitPanelArrowsPositions,
       ];
     },
-    [setSplitFromPanelLineData]
+    [setSplitFromPanelLineData, setSplitToPanelLineData, windowWidth]
   );
 
   useLayoutEffect(() => {

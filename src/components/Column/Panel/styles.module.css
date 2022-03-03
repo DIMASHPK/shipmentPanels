@@ -6,7 +6,7 @@
   border-radius: 10px;
   background: var(--white-color);
   box-shadow: var(--box-shadow);
-  min-width: 142px;
+  width: 142px;
 }
 
 .panelContainer:first-of-type {
@@ -103,4 +103,20 @@
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   top: 0;
+}
+
+@media (max-width: 991px) {
+  .splitsWrapper {
+    flex-direction: row;
+  }
+
+  .splitsWrapper .panelContentContainer {
+    border-radius: 10px;
+    top: 0;
+    left: -10px;
+  }
+
+  .splitsWrapper .panelContentContainer {
+    left: 0;
+  }
 }

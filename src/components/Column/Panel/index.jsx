@@ -1,7 +1,10 @@
 import React from "react";
+import { getStrokeColor } from "../../../hooks/helpers";
 import styles from "./styles.module.css";
 
-const Panel = ({ airport, mlsStatus, nextStopId, id, split }) => {
+const Panel = React.memo(props => {
+  const { airport, mlsStatus, nextStopId, id, split } = props;
+
   const renderBody = (data = { style: { zIndex: 1 } }) => (
     <div {...data} className={styles.panelContentContainer}>
       <p className={styles.panelContentPieces}>100 pcs</p>
@@ -21,6 +24,7 @@ const Panel = ({ airport, mlsStatus, nextStopId, id, split }) => {
         id={id}
         data-nextstopid={nextStopId}
         data-withsplits={!!split?.length}
+        data-strokecolor={getStrokeColor(props)}
       >
         <div className={styles.panelHeaderContainer}>
           <div className={styles.panelHeaderAirport}>
@@ -34,16 +38,20 @@ const Panel = ({ airport, mlsStatus, nextStopId, id, split }) => {
       </div>
       {Boolean(split?.length) && (
         <div className={styles.splitsWrapper}>
-          {split?.map?.(({ nextStopId }, i) =>
+          {split?.map?.(({ nextStopId, ...rest }, i) =>
             renderBody({
               style: { zIndex: split.length - i },
               "data-nextstopid": nextStopId,
+              "data-strokecolor": getStrokeColor({ nextStopId, ...rest }),
+              key: i,
             })
           )}
         </div>
       )}
     </div>
   );
-};
+});
+
+Panel.displayName = "Panel";
 
 export default Panel;
