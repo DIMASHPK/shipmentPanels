@@ -34,7 +34,32 @@ export const getTarget = i => {
 
 export const findLast = (arr, callback) => arr.slice().reverse().find(callback);
 
-export const getItemMeasurements = node => node.getBoundingClientRect();
+export const getNodeRelativeCoords = data => [
+  data?.offsetParent?.offsetLeft || 0,
+  data?.offsetParent?.offsetTop || 0,
+];
+
+export const getItemMeasurements = (node, [parentXOffset, parentYOffset]) => {
+  const { left, top, height, width, right, bottom, x, y } =
+    node.getBoundingClientRect();
+
+  return {
+    left,
+    top,
+    height,
+    width,
+    right,
+    bottom,
+    x,
+    y,
+    relativeX: x - parentXOffset,
+    relativeY: y - parentYOffset,
+    relativeLeft: x - parentXOffset,
+    relativeTop: y - parentYOffset,
+    relativeRight: x - parentXOffset + width,
+    relativeBottom: y - parentYOffset + height,
+  };
+};
 
 export const setLineDataToArray = (arr, data) => arr.push(data);
 
@@ -45,43 +70,40 @@ export const getLineMeasurements = (
 ) => {
   const {
     height: sourceHeight,
-    y: sourceY,
-    right: sourceRight,
-    x: sourceX,
+    relativeY: sourceY,
+    relativeRight: sourceRight,
+    relativeX: sourceX,
     width: sourceWidth,
   } = sourceNodeMeasurements;
 
   const {
-    x: targetX,
+    relativeX: targetX,
     height: targetHeight,
-    y: targetY,
+    relativeY: targetY,
+    width: targetWidth,
   } = targetNodeMeasurements;
 
-  const commonMeasurements = {
-    x: sourceX + sourceWidth / 2 - 8,
-    y: sourceY + sourceHeight - 8,
-  };
-
-  console.log({ windowWidth });
-
   if (windowWidth <= 991) {
+    console.log({});
+
     return {
-      ...commonMeasurements,
+      x: sourceX + sourceWidth / 2,
+      y: sourceY + sourceHeight,
       points: getPointsArray(
         0,
         0,
         0,
         10,
-        targetX - sourceX,
+        targetX + targetWidth / 2 - (sourceX + sourceWidth / 2),
         10,
-        targetX - sourceX,
+        targetX + targetWidth / 2 - (sourceX + sourceWidth / 2),
         targetY - (sourceHeight + sourceY)
       ),
     };
   }
 
   return {
-    x: sourceRight - 8,
+    x: sourceX + sourceWidth,
     y: sourceY + sourceHeight / 2,
     points: getPointsArray(
       0,
@@ -98,18 +120,22 @@ export const getLineMeasurements = (
 
 export const getRelationshipItemMeasurements = (
   parentMeasurements,
-  splitsWrapperMeasurements
+  splitsWrapperMeasurements,
+  nodeRelativeCoords
 ) => {
-  const { y: splitsWrapperY } = getItemMeasurements(splitsWrapperMeasurements);
+  const { relativeY: splitsWrapperY } = getItemMeasurements(
+    splitsWrapperMeasurements,
+    nodeRelativeCoords
+  );
   const {
     width: parentWidth,
-    bottom: parentBottom,
+    relativeBottom: parentBottom,
+    relativeX: parentX,
+  } = getItemMeasurements(parentMeasurements, nodeRelativeCoords);
 
-    x: parentX,
-  } = getItemMeasurements(parentMeasurements);
   return {
-    x: parentX + parentWidth / 2 - 8,
-    y: parentBottom - 8,
+    x: parentX + parentWidth / 2,
+    y: parentBottom,
     points: getPointsArray(0, 0, 0, splitsWrapperY - parentBottom - 1),
   };
 };

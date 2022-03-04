@@ -9,6 +9,7 @@ import {
   getTriangleMeasurements,
   getRelationshipTriangleMeasurements,
   getDataSetStrokeColor,
+  getNodeRelativeCoords,
 } from "./helpers";
 
 const useLines = ({ windowWidth }) => {
@@ -16,35 +17,42 @@ const useLines = ({ windowWidth }) => {
 
   const [panelLines, setPanelLines] = useState([]);
 
-  const setSplitFromPanelLineData = useCallback(({ root, array }) => {
-    const lineMeasurements = getRelationshipItemMeasurements(
-      root,
-      root.nextSibling
-    );
+  const setSplitFromPanelLineData = useCallback(
+    ({ root, array, nodeRelativeCoords }) => {
+      const lineMeasurements = getRelationshipItemMeasurements(
+        root,
+        root.nextSibling,
+        nodeRelativeCoords
+      );
 
-    const triangleMeasurements =
-      getRelationshipTriangleMeasurements(lineMeasurements);
+      const triangleMeasurements =
+        getRelationshipTriangleMeasurements(lineMeasurements);
 
-    setLineDataToArray(array, {
-      lineMeasurements,
-      triangleMeasurements,
-      stroke: getDataSetStrokeColor(root),
-    });
-  }, []);
+      setLineDataToArray(array, {
+        lineMeasurements,
+        triangleMeasurements,
+        stroke: getDataSetStrokeColor(root),
+      });
+    },
+    []
+  );
 
   const setSplitToPanelLineData = useCallback(
-    ({ root, splitPanelArrowsPositions, panelNodes }) => {
+    ({ root, splitPanelArrowsPositions, panelNodes, nodeRelativeCoords }) => {
       const splitsArray = [...root.nextSibling.childNodes];
 
       splitsArray.forEach(item => {
-        const sourceItem = getItemMeasurements(item);
+        const sourceItem = getItemMeasurements(item, nodeRelativeCoords);
 
         const matchedPanelNode = findByNextId(
           panelNodes,
           item.dataset.nextstopid
         );
 
-        const targetItem = getItemMeasurements(matchedPanelNode);
+        const targetItem = getItemMeasurements(
+          matchedPanelNode,
+          nodeRelativeCoords
+        );
 
         const lineMeasurements = getLineMeasurements(
           sourceItem,
@@ -70,6 +78,8 @@ const useLines = ({ windowWidth }) => {
     root => {
       const panelNodes = getPanelNodes(root);
 
+      const nodeRelativeCoords = getNodeRelativeCoords(root);
+
       const panelsArrowsPositions = [];
       const splitArrowsPositions = [];
       const splitPanelArrowsPositions = [];
@@ -81,19 +91,27 @@ const useLines = ({ windowWidth }) => {
           setSplitFromPanelLineData({
             root: panelNode,
             array: splitArrowsPositions,
+            nodeRelativeCoords,
           });
 
           setSplitToPanelLineData({
             root: panelNode,
             splitPanelArrowsPositions,
             panelNodes,
+            nodeRelativeCoords,
           });
         }
 
         if (!nextItem) return;
 
-        const itemMeasurements = getItemMeasurements(panelNode);
-        const nextItemMeasurements = getItemMeasurements(nextItem);
+        const itemMeasurements = getItemMeasurements(
+          panelNode,
+          nodeRelativeCoords
+        );
+        const nextItemMeasurements = getItemMeasurements(
+          nextItem,
+          nodeRelativeCoords
+        );
 
         const lineMeasurements = getLineMeasurements(
           itemMeasurements,

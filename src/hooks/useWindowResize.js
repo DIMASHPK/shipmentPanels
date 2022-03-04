@@ -5,7 +5,9 @@ export const useWindowResize = () => {
 
   useLayoutEffect(() => {
     const eventHandler = () => {
-      setWidth(window.screen.availWidth);
+      const windowWidth = Math.min(window.screen.availWidth, window.innerWidth);
+
+      setWidth(windowWidth);
     };
 
     window.addEventListener("resize", eventHandler);
