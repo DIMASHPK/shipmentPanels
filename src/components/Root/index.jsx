@@ -1,59 +1,17 @@
-import React from "react";
-import styles from "./styles.module.css";
-import { Stage, Layer, Line } from "react-konva";
-import Column from "../Column/";
-import { formatData } from "../../utils";
-import useLines from "../../hooks/useLines";
-import { DATA } from "../../mocks";
-import { useWindowResize } from "../../hooks/useWindowResize";
+import { FULL_RESPONSE } from "../../mocks";
+import SplitCard from "./SplitCard";
+import cn from "classnames";
 
-const Root = props => {
-  const [width, setWidth] = React.useState(0);
-  const [height, setHeight] = React.useState(0);
-
-  const { width: windowWidth } = useWindowResize();
-
-  const { panelLines, wrapperRef } = useLines({ windowWidth });
-
-  const reformatedData = formatData(DATA);
-
-  React.useLayoutEffect(() => {
-    if (wrapperRef?.current) {
-      const width = wrapperRef.current.offsetWidth;
-      const height = wrapperRef.current.offsetHeight;
-
-      setWidth(width);
-      setHeight(height);
-    }
-  }, [wrapperRef, windowWidth]);
-
-  const handleMap = (panels, id) => <Column key={id} panels={panels} />;
-
-  const handleLineMap = (
-    { lineMeasurements, triangleMeasurements, stroke = "green" },
-    i
-  ) => (
-    <React.Fragment key={i}>
-      <Line
-        {...lineMeasurements}
-        lineJoin="round"
-        strokeWidth={3}
-        stroke={stroke}
-      />
-      {triangleMeasurements && (
-        <Line {...triangleMeasurements} strokeWidth={2} stroke={stroke} />
-      )}
-    </React.Fragment>
+const Root = () => {
+  const handleMap = split => (
+    <SplitCard key={split?.splitNumber} split={split} />
   );
 
   return (
-    <div className={styles.mainContainer}>
-      <div ref={wrapperRef} className={styles.panelsContainer}>
-        {reformatedData.map(handleMap)}
+    <div className={cn("container", "m-5")}>
+      <div className="row">
+        <div className="col-8">{FULL_RESPONSE.map(handleMap)}</div>
       </div>
-      <Stage width={width} height={height} className={styles.stage}>
-        <Layer>{panelLines.map(handleLineMap)}</Layer>
-      </Stage>
     </div>
   );
 };

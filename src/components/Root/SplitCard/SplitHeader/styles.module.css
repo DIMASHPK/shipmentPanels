@@ -1,0 +1,89 @@
+.splitHeader__container,
+.splitHeader__flightContentContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.splitHeader__splitsWrapper {
+  padding: 10px 0 10px 12px;
+  width: 96px;
+  border-radius: 20px;
+  background: var(--main-green-color);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 12px;
+  position: relative;
+}
+
+.slitHeader__splitsLabel {
+  color: var(--white-color);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.splitHeader__flightContentContainer {
+  border-radius: 20px;
+  background: var(--white-color);
+  border: 1px dashed var(--main-green-color);
+  padding: 9px 17px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 12px;
+  position: absolute;
+  z-index: 1;
+  left: 88px;
+  width: 290px;
+}
+
+.splitHeader__flightInfo {
+  font-weight: normal;
+  margin-left: 32px;
+}
+
+.splitHeader__dashedDivider {
+  height: 0;
+  border-top: 1px dashed var(--main-green-color);
+  flex-grow: 1;
+}
+
+.splitHeader__statusContainer {
+  padding: 4px 10px 4px 15px;
+  font-size: 12px;
+  line-height: 12px;
+  position: relative;
+  background-color: var(--background-green-primary);
+  color: #2d8686;
+  border-radius: 20px;
+  border: 1px solid var(--border-green);
+}
+
+.splitHeader__statusContainer::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+  z-index: 1;
+  left: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: green;
+}
+
+@media (max-width: 992px) {
+  .splitHeader__splitsContainer {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .splitHeader__flightContentContainer {
+    position: static;
+  }
+
+  .splitHeader__flightContentContainer {
+    max-width: 290px;
+    width: auto;
+  }
+}

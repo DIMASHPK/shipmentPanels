@@ -46,7 +46,7 @@ const useLines = ({ windowWidth }) => {
 
         const matchedPanelNode = findByNextId(
           panelNodes,
-          item.dataset.nextstopid
+          item.dataset.nextitemid
         );
 
         const targetItem = getItemMeasurements(
@@ -78,14 +78,14 @@ const useLines = ({ windowWidth }) => {
     root => {
       const panelNodes = getPanelNodes(root);
 
-      const nodeRelativeCoords = getNodeRelativeCoords(root);
+      const nodeRelativeCoords = getNodeRelativeCoords(root.nextSibling);
 
       const panelsArrowsPositions = [];
       const splitArrowsPositions = [];
       const splitPanelArrowsPositions = [];
 
       const handleForEach = panelNode => {
-        const nextItem = findByNextId(panelNodes, panelNode.dataset.nextstopid);
+        const nextItem = findByNextId(panelNodes, panelNode.dataset.nextitemid);
 
         if (panelNode.dataset.withsplits === "true") {
           setSplitFromPanelLineData({

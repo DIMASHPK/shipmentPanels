@@ -5,22 +5,22 @@ export const formatData = data => {
     const beforeLastColumn = panelColumns?.[panelColumns.length - 2] || [];
 
     const beforeLastColumnSplitsQty = beforeLastColumn.reduce(
-      (acc, { split }) => split.length + acc,
+      (acc, { subSplits }) => subSplits.length + acc,
       0
     );
 
     const beforeLastColumnSplitsNextIds =
       beforeLastColumn?.reduce(
-        (acc, { split }) => [
+        (acc, item) => [
           ...acc,
-          ...split.map(({ nextStopId }) => nextStopId),
+          ...item.subSplits.map(({ nextItemId }) => nextItemId),
         ],
         []
       ) || [];
 
     if (
       beforeLastColumnSplitsQty &&
-      beforeLastColumnSplitsNextIds.includes(panel.id)
+      beforeLastColumnSplitsNextIds.includes(panel.itemId)
     ) {
       panelColumns = [
         ...panelColumns.map((item, i) =>

@@ -34,12 +34,10 @@ export const getTarget = i => {
 
 export const findLast = (arr, callback) => arr.slice().reverse().find(callback);
 
-export const getNodeRelativeCoords = data => [
-  data?.offsetParent?.offsetLeft || 0,
-  data?.offsetParent?.offsetTop || 0,
-];
-
-export const getItemMeasurements = (node, [parentXOffset, parentYOffset]) => {
+export const getItemMeasurements = (
+  node,
+  [parentXOffset, parentYOffset] = [0, 0]
+) => {
   const { left, top, height, width, right, bottom, x, y } =
     node.getBoundingClientRect();
 
@@ -59,6 +57,11 @@ export const getItemMeasurements = (node, [parentXOffset, parentYOffset]) => {
     relativeRight: x - parentXOffset + width,
     relativeBottom: y - parentYOffset + height,
   };
+};
+
+export const getNodeRelativeCoords = node => {
+  const { x, y } = getItemMeasurements(node);
+  return [x, y];
 };
 
 export const setLineDataToArray = (arr, data) => arr.push(data);
@@ -84,8 +87,6 @@ export const getLineMeasurements = (
   } = targetNodeMeasurements;
 
   if (windowWidth <= 991) {
-    console.log({});
-
     return {
       x: sourceX + sourceWidth / 2,
       y: sourceY + sourceHeight,
@@ -176,13 +177,13 @@ export const getRelationshipTriangleMeasurements = lineMeasurements => {
 
 export const findBy = (array, callback) => array.find(callback);
 
-export const findByNextId = (array, nextStopId) =>
-  findBy(array, ({ id }) => id === nextStopId);
+export const findByNextId = (array, nextItemId) =>
+  findBy(array, ({ id }) => id === nextItemId);
 
 export const getStrokeColor = item => {
-  const { split, nextStopId, mlsStatus } = item;
+  const { split, nextItemId, mlsStatus } = item;
 
-  const nextItem = DATA.find(({ id }) => id === nextStopId);
+  const nextItem = DATA.find(({ id }) => id === nextItemId);
 
   if (
     (split?.length && mlsStatus === STATUSES.DEPARTED) ||
