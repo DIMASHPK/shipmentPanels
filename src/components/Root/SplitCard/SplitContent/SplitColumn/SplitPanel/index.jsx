@@ -1,6 +1,8 @@
 import React from "react";
-import { getStrokeColor } from "../../../hooks/helpers";
+import { getStrokeColor } from "../../../../../../hooks/helpers";
 import styles from "./styles.module.css";
+import { STATUSES } from "../../../../../../mocks";
+import cn from "classnames";
 
 const Panel = React.memo(props => {
   const {
@@ -14,7 +16,14 @@ const Panel = React.memo(props => {
     originAirportCode,
     pieces,
     subSplits,
+    classes: { splitPanelContainer },
   } = props;
+
+  const statusesStylesMapping = {
+    [STATUSES.ARRIVED]: styles["panel__header-status--orange"],
+    [STATUSES.PARTIAL_ARRIVED]: styles["panel__header-status--orange"],
+    [STATUSES.DEPARTED]: styles["panel__header-status--green"],
+  };
 
   const renderBody = (
     {
@@ -28,36 +37,45 @@ const Panel = React.memo(props => {
       wrapperProps: { style: { zIndex: 1 } },
     }
   ) => (
-    <div {...wrapperProps} className={styles.panelContentContainer}>
-      <p className={styles.panelContentPieces}>{pieces} pcs</p>
+    <div {...wrapperProps} className={styles["panel__content-container"]}>
+      <p className={styles["panel__content-pieces"]}>{pieces} pcs</p>
       <div>
-        <div>
-          <span className={styles.panelContentCode}>
+        <div className={styles["panel__content-code-wrapper"]}>
+          <span className={styles["panel__content-code"]}>
             {carrierCode} {flightNumber}
           </span>
         </div>
-        <span className={styles.panelContentDate}>
-          {milestoneTime} ({milestoneTimePostfix})
+        <span className={styles["panel__content-date"]}>
+          {/*  {milestoneTime} */}16 Dec, 22:35 ({milestoneTimePostfix})
         </span>
       </div>
     </div>
   );
 
   return (
-    <div className={styles.panelWrapper}>
+    <div className={cn(styles.panel__wrapper, splitPanelContainer)}>
       <div
-        className={styles.panelContainer}
+        className={styles.panel__container}
         id={itemId}
         data-nextitemid={nextItemId}
         data-withsplits={!!subSplits?.length}
         data-strokecolor={getStrokeColor(props)}
       >
-        <div className={styles.panelHeaderContainer}>
-          <div className={styles.panelHeaderAirport}>
-            <span>{originAirportCode}</span>
+        <div className={styles["panel__header-container"]}>
+          <div className={styles["panel__header-airport"]}>
+            <span className={styles["panel__header-airport-label"]}>
+              {originAirportCode}
+            </span>
           </div>
-          <div className={styles.panelHeaderStatus}>
-            <span>{milestoneStatus}</span>
+          <div
+            className={cn(
+              styles["panel__header-status"],
+              statusesStylesMapping[milestoneStatus]
+            )}
+          >
+            <span className={styles["panel__header-status-label"]}>
+              {milestoneStatus}
+            </span>
           </div>
         </div>
         {renderBody({
@@ -69,7 +87,7 @@ const Panel = React.memo(props => {
         })}
       </div>
       {Boolean(subSplits?.length) && (
-        <div className={styles.splitsWrapper}>
+        <div className={styles["panel__splits-wrapper"]}>
           {subSplits?.map?.(({ nextItemId, ...rest }, i) =>
             renderBody({
               wrapperProps: {

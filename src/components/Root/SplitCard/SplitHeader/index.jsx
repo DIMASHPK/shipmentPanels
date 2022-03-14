@@ -21,7 +21,7 @@ const SplitHeader = props => {
       </div>
       <div className={styles.splitHeader__flightContentContainer}>
         <span className={styles.splitHeader__piecesLabel}>{pieces} pcs</span>
-        <div className={styles.border}>
+        <div className={styles.splitHeader__flightInfo}>
           <span className={styles.splitHeader__stopsLabel}>
             {stops.toString()},
           </span>

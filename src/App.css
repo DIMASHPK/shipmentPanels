@@ -3,11 +3,14 @@
 :root {
   --main-green-color: #2d8686;
   --border-green: rgba(151, 229, 203, 1);
+  --border-orange: rgba(255, 176, 125, 1);
   --white-color: #fff;
   --background-green-primary: rgba(227, 248, 241, 1);
   --background-green-secondary: rgba(6, 128, 141, 1);
+  --background-orange: rgba(255, 234, 220, 1);
   --text-blue: #004164;
   --text-dark: rgba(40, 70, 91, 0.749019607843137);
+  --text-orange: #ff6400;
   --box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 

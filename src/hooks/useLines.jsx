@@ -11,9 +11,12 @@ import {
   getDataSetStrokeColor,
   getNodeRelativeCoords,
 } from "./helpers";
+import { useWindowResize } from "./useWindowResize";
 
-const useLines = ({ windowWidth }) => {
+const useLines = () => {
   const ref = useRef();
+
+  const { width: windowWidth } = useWindowResize();
 
   const [panelLines, setPanelLines] = useState([]);
 

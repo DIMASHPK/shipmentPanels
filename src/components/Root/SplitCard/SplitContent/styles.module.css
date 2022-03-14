@@ -1,8 +1,8 @@
-.panelsContainer {
+.split-content__panels-container {
   display: flex;
 }
 
-.stage {
+.split-content__stage {
   position: absolute;
   top: 0;
   left: 0;
@@ -13,13 +13,13 @@
   height: 100%; */
 }
 
-.mainContainer {
+.split-content__main-container {
   position: relative;
   display: flex;
 }
 
 @media (max-width: 991px) {
-  .panelsContainer {
+  .split-content__panels-container {
     flex-direction: column;
   }
 }

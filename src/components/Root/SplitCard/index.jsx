@@ -19,7 +19,7 @@ const SplitCard = props => {
         <SplitHeader split={split} />
       </div>
       {open && (
-        <div className={cn("m-3", "mt-0", styles.splitContentContainer)}>
+        <div className={cn(styles.splitContentContainer)}>
           <SplitContent split={split} />
         </div>
       )}

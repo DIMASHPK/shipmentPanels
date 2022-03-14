@@ -8,9 +8,13 @@ const Root = () => {
   );
 
   return (
-    <div className={cn("container", "m-5")}>
+    <div className={cn("container")}>
       <div className="row">
-        <div className="col-8">{FULL_RESPONSE.map(handleMap)}</div>
+        <div className={cn("col-12", "col-md-8")}>
+          <div className={cn("m-1", "m-md-5")}>
+            {FULL_RESPONSE.map(handleMap)}
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,37 +1,27 @@
-import React, { useRef } from "react";
+import React from "react";
 import styles from "./styles.module.css";
 import { Stage, Layer, Line } from "react-konva";
-import Column from "../../../Column";
+import SplitColumn from "./SplitColumn";
 import { formatData } from "../../../../utils";
 import useLines from "../../../../hooks/useLines";
-import { DATA } from "../../../../mocks";
+import cn from "classnames";
 import { useWindowResize } from "../../../../hooks/useWindowResize";
+import { useContainerResize } from "../../../../hooks/useContainerResize";
 
 const SplitContent = props => {
   const {
     split: { splitDetails },
   } = props;
 
-  const [width, setWidth] = React.useState(0);
-  const [height, setHeight] = React.useState(0);
-
   const { width: windowWidth } = useWindowResize();
 
   const { panelLines, wrapperRef } = useLines({ windowWidth });
 
+  const { height, width } = useContainerResize({ ref: wrapperRef });
+
   const reformatedData = formatData(splitDetails);
 
-  React.useLayoutEffect(() => {
-    if (wrapperRef?.current) {
-      const width = wrapperRef.current.offsetWidth;
-      const height = wrapperRef.current.offsetHeight;
-
-      setWidth(width);
-      setHeight(height);
-    }
-  }, [wrapperRef, windowWidth]);
-
-  const handleMap = (panels, id) => <Column key={id} panels={panels} />;
+  const handleMap = (panels, id) => <SplitColumn key={id} panels={panels} />;
 
   const handleLineMap = (
     { lineMeasurements, triangleMeasurements, stroke = "green" },
@@ -51,11 +41,18 @@ const SplitContent = props => {
   );
 
   return (
-    <div className={styles.mainContainer}>
-      <div ref={wrapperRef} className={styles.panelsContainer}>
+    <div className={cn(styles["split-content__main-container"], "pt-3")}>
+      <div
+        ref={wrapperRef}
+        className={styles["split-content__panels-container"]}
+      >
         {reformatedData.map(handleMap)}
       </div>
-      <Stage width={width} height={height} className={styles.stage}>
+      <Stage
+        width={width}
+        height={height}
+        className={styles["split-content__stage"]}
+      >
         <Layer>{panelLines.map(handleLineMap)}</Layer>
       </Stage>
     </div>
