@@ -18,6 +18,7 @@ const Panel = React.memo(props => {
     subSplits,
     classes: { splitPanelContainer },
     currentKey,
+    currentSplitPanels,
   } = props;
 
   const statusesStylesMapping = {
@@ -60,7 +61,7 @@ const Panel = React.memo(props => {
         id={itemId}
         data-nextitemid={nextItemId}
         data-withsplits={!!subSplits?.length}
-        data-strokecolor={getStrokeColor(props)}
+        data-strokecolor={getStrokeColor(props, currentSplitPanels)}
       >
         <div className={styles["panel__header-container"]}>
           <div className={styles["panel__header-airport"]}>
@@ -94,7 +95,13 @@ const Panel = React.memo(props => {
               wrapperProps: {
                 style: { zIndex: subSplits.length - i },
                 "data-nextitemid": nextItemId,
-                "data-strokecolor": getStrokeColor({ nextItemId, ...rest }),
+                "data-strokecolor": getStrokeColor(
+                  {
+                    nextItemId,
+                    ...rest,
+                  },
+                  currentSplitPanels
+                ),
                 key: `${currentKey}-${i}`,
               },
               ...rest,

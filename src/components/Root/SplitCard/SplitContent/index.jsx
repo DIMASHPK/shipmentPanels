@@ -22,7 +22,12 @@ const SplitContent = props => {
   const reformatedData = formatData(splitDetails);
 
   const handleMap = (panels, id) => (
-    <SplitColumn key={id} panels={panels} currentKey={id} />
+    <SplitColumn
+      key={id}
+      panels={panels}
+      currentKey={id}
+      currentSplitPanels={splitDetails}
+    />
   );
 
   const handleLineMap = (

@@ -1,4 +1,4 @@
-import { DATA, EDGE_STYLES, STATUSES } from "./mocks";
+import { EDGE_STYLES, STATUSES } from "./mocks";
 
 export const getPanelNodes = root =>
   [...root.childNodes]
@@ -154,14 +154,16 @@ export const findBy = (array, callback) => array.find(callback);
 export const findByNextId = (array, nextItemId) =>
   findBy(array, ({ id }) => id === nextItemId);
 
-export const getStrokeColor = item => {
-  const { split, nextItemId, mlsStatus } = item;
+export const getStrokeColor = (item, currentSplitPanels = []) => {
+  const { subSplits, nextItemId, milestoneStatus } = item;
 
-  const nextItem = DATA.find(({ id }) => id === nextItemId);
+  const nextItem = currentSplitPanels.find(
+    ({ itemId }) => itemId === nextItemId
+  );
 
   if (
-    (split?.length && mlsStatus === STATUSES.DEPARTED) ||
-    nextItem?.mlsStatus === STATUSES.DEPARTED
+    (subSplits?.length && milestoneStatus === STATUSES.DEPARTED) ||
+    nextItem?.milestoneStatus === STATUSES.DEPARTED
   ) {
     return EDGE_STYLES.GREEN;
   }
