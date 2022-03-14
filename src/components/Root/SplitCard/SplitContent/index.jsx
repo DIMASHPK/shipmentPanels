@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./styles.module.css";
 import { Stage, Layer, Line } from "react-konva";
 import SplitColumn from "./SplitColumn";
-import { formatData } from "../../../../utils";
+import { formatData } from "../../../../helpers";
 import useLines from "../../../../hooks/useLines";
 import cn from "classnames";
 import { useWindowResize } from "../../../../hooks/useWindowResize";
@@ -21,7 +21,9 @@ const SplitContent = props => {
 
   const reformatedData = formatData(splitDetails);
 
-  const handleMap = (panels, id) => <SplitColumn key={id} panels={panels} />;
+  const handleMap = (panels, id) => (
+    <SplitColumn key={id} panels={panels} currentKey={id} />
+  );
 
   const handleLineMap = (
     { lineMeasurements, triangleMeasurements, stroke = "green" },

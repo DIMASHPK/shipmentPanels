@@ -10,7 +10,7 @@ const Root = () => {
   return (
     <div className={cn("container")}>
       <div className="row">
-        <div className={cn("col-12", "col-md-8")}>
+        <div className={cn("col-12", "col-md-10")}>
           <div className={cn("m-1", "m-md-5")}>
             {FULL_RESPONSE.map(handleMap)}
           </div>

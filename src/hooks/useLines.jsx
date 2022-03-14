@@ -10,7 +10,7 @@ import {
   getRelationshipTriangleMeasurements,
   getDataSetStrokeColor,
   getNodeRelativeCoords,
-} from "./helpers";
+} from "../helpers";
 import { useWindowResize } from "./useWindowResize";
 
 const useLines = () => {
@@ -77,13 +77,13 @@ const useLines = () => {
     [windowWidth]
   );
 
-  const renderMainLines = useCallback(
+  const renderLines = useCallback(
     root => {
       const panelNodes = getPanelNodes(root);
 
       const nodeRelativeCoords = getNodeRelativeCoords(root.nextSibling);
 
-      const panelsArrowsPositions = [];
+      const panelArrowsPositions = [];
       const splitArrowsPositions = [];
       const splitPanelArrowsPositions = [];
 
@@ -127,7 +127,7 @@ const useLines = () => {
           windowWidth
         );
 
-        setLineDataToArray(panelsArrowsPositions, {
+        setLineDataToArray(panelArrowsPositions, {
           lineMeasurements,
           triangleMeasurements,
           stroke: getDataSetStrokeColor(panelNode),
@@ -137,7 +137,7 @@ const useLines = () => {
       panelNodes.forEach(handleForEach);
 
       return [
-        ...panelsArrowsPositions,
+        ...panelArrowsPositions,
         ...splitArrowsPositions,
         ...splitPanelArrowsPositions,
       ];
@@ -149,9 +149,9 @@ const useLines = () => {
     if (ref?.current) {
       const { current } = ref;
 
-      setPanelLines([...renderMainLines(current)]);
+      setPanelLines([...renderLines(current)]);
     }
-  }, [renderMainLines]);
+  }, [renderLines]);
 
   return { wrapperRef: ref, panelLines };
 };

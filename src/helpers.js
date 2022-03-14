@@ -1,4 +1,4 @@
-import { DATA, EDGE_STYLES, STATUSES } from "../mocks";
+import { DATA, EDGE_STYLES, STATUSES } from "./mocks";
 
 export const getPanelNodes = root =>
   [...root.childNodes]
@@ -6,33 +6,7 @@ export const getPanelNodes = root =>
     .flat()
     .map(item => item.childNodes[0]);
 
-export const getSource = (i, data, split) => {
-  if (split.length) {
-    return "bottom";
-  }
-
-  if (i === data.length - 1) {
-    return "left";
-  }
-
-  if (!i) {
-    return "right";
-  }
-
-  return "right";
-};
-
 export const getPointsArray = (...data) => [...data];
-
-export const getTarget = i => {
-  if (!i) {
-    return "right";
-  }
-
-  return "left";
-};
-
-export const findLast = (arr, callback) => arr.slice().reverse().find(callback);
 
 export const getItemMeasurements = (
   node,
@@ -196,3 +170,42 @@ export const getStrokeColor = item => {
 };
 
 export const getDataSetStrokeColor = node => node.dataset.strokecolor;
+
+export const formatData = data => {
+  let panelColumns = [];
+
+  data.forEach((panel, i) => {
+    const beforeLastColumn = panelColumns?.[panelColumns.length - 2] || [];
+
+    const beforeLastColumnSplitsQty = beforeLastColumn.reduce(
+      (acc, { subSplits }) => subSplits.length + acc,
+      0
+    );
+
+    const beforeLastColumnSplitsNextIds =
+      beforeLastColumn?.reduce(
+        (acc, item) => [
+          ...acc,
+          ...item.subSplits.map(({ nextItemId }) => nextItemId),
+        ],
+        []
+      ) || [];
+
+    if (
+      beforeLastColumnSplitsQty &&
+      beforeLastColumnSplitsNextIds.includes(panel.itemId)
+    ) {
+      panelColumns = [
+        ...panelColumns.map((item, i) =>
+          i === panelColumns.length - 1 ? [...item, panel] : item
+        ),
+      ];
+
+      return;
+    }
+
+    panelColumns = [...panelColumns, [panel]];
+  });
+
+  return panelColumns;
+};

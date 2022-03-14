@@ -1,5 +1,5 @@
 import React from "react";
-import { getStrokeColor } from "../../../../../../hooks/helpers";
+import { getStrokeColor } from "../../../../../../helpers";
 import styles from "./styles.module.css";
 import { STATUSES } from "../../../../../../mocks";
 import cn from "classnames";
@@ -17,6 +17,7 @@ const Panel = React.memo(props => {
     pieces,
     subSplits,
     classes: { splitPanelContainer },
+    currentKey,
   } = props;
 
   const statusesStylesMapping = {
@@ -94,7 +95,7 @@ const Panel = React.memo(props => {
                 style: { zIndex: subSplits.length - i },
                 "data-nextitemid": nextItemId,
                 "data-strokecolor": getStrokeColor({ nextItemId, ...rest }),
-                key: i,
+                key: `${currentKey}-${i}`,
               },
               ...rest,
             })

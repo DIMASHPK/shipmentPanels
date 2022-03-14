@@ -2,11 +2,12 @@ import SplitPanel from "./SplitPanel";
 import styles from "./styles.module.css";
 import cn from "classnames";
 
-const Column = ({ panels }) => {
+const Column = ({ panels, currentKey }) => {
   const handleMap = item => (
     <SplitPanel
       classes={{ splitPanelContainer: styles["column__split-panel-container"] }}
-      key={item.id}
+      key={`${currentKey}-${item.itemId}`}
+      currentKey={`${currentKey}-${item.itemId}`}
       {...item}
     />
   );
