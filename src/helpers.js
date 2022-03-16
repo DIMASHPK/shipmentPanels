@@ -191,7 +191,7 @@ export const formatData = data => {
           ...item.subSplits.map(({ nextItemId }) => nextItemId),
         ],
         []
-      ) || [];
+      );
 
     if (
       beforeLastColumnSplitsQty &&

@@ -18,7 +18,7 @@ it("split card expand split diagram", async () => {
 
     const { getByTestId, findByTestId, container } = component;
 
-    const splitHeaderNode = getByTestId("split-header-1");
+    const splitHeaderNode = getByTestId("split-header-4");
 
     fireEvent.click(splitHeaderNode);
 
