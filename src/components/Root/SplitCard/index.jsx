@@ -15,11 +15,11 @@ const SplitCard = props => {
 
   return (
     <div className={cn("mb-4", "shadow", "bg-white", "rounded")}>
-      <div onClick={toggleOpen} className={cn("p-3", "cursor-pointer")}>
+      <div onClick={toggleOpen} className={cn("p-3", "cursor-pointer")} data-testid={`split-header-${split?.splitNumber}`}>
         <SplitHeader split={split} />
       </div>
       {open && (
-        <div className={cn(styles.splitContentContainer)}>
+        <div className={cn(styles.splitContentContainer)} data-testid="split-content">
           <SplitContent split={split} />
         </div>
       )}

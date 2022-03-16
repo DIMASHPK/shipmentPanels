@@ -29,9 +29,9 @@ const SplitContent = props => {
       currentSplitPanels={splitDetails}
     />
   );
-
+  
   const handleLineMap = (
-    { lineMeasurements, triangleMeasurements, stroke = "green" },
+    { lineMeasurements, triangleMeasurements, stroke },
     i
   ) => (
     <React.Fragment key={i}>
